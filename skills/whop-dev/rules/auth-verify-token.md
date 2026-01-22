@@ -1,11 +1,17 @@
 ---
 name: auth-verify-token
 description: Always verify Whop user tokens server-side before any operation
+impact: CRITICAL
+impactDescription: Prevents authentication bypass and unauthorized data access
 metadata:
   tags: authentication, security, token, server
 ---
 
+## Verify User Tokens Server-Side
+
 Every protected route MUST verify the user token using `whopsdk.verifyUserToken()`.
+
+**NEVER trust client-provided userId parameters.**
 
 **Incorrect (trusting client-provided userId):**
 
@@ -14,7 +20,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("userId"); // DANGEROUS: Attacker-controlled!
   
-  // Fetching data with untrusted userId
+  // Fetching data with untrusted userId - SECURITY VULNERABILITY
   const data = await db.secrets.findMany({ where: { user_id: userId } });
   return NextResponse.json(data);
 }
@@ -36,7 +42,7 @@ export async function GET(request: NextRequest) {
 }
 ```
 
-The `verifyUserToken()` call will throw if the token is invalid, expired, or missing.
+The `verifyUserToken()` call throws if the token is invalid, expired, or missing.
 
 ## Options
 
@@ -66,7 +72,7 @@ export default async function ExperiencePage({
   const headersList = await headers();
   const { experienceId } = await params;
   
-  // Verify user first
+  // MUST verify user first
   const { userId } = await whopsdk.verifyUserToken(headersList);
   
   // Then check access
@@ -79,7 +85,6 @@ export default async function ExperiencePage({
     return <div>Access denied</div>;
   }
   
-  // Safe to render protected content
   return <ProtectedContent userId={userId} />;
 }
 ```
@@ -96,7 +101,6 @@ export async function GET(request: NextRequest) {
     const headersList = await headers();
     const { userId } = await whopsdk.verifyUserToken(headersList);
     
-    // Proceed with authenticated request
     return NextResponse.json({ userId, data: "protected" });
   } catch (error) {
     // Token invalid, expired, or missing
@@ -126,8 +130,8 @@ export async function POST(request: NextRequest) {
 
 - `headers()` is async in Next.js 15+ App Router
 - The token is automatically injected by Whop's iframe
-- Never pass tokens via query parameters or request body
-- Always use `await headers()` before `verifyUserToken()`
+- NEVER pass tokens via query parameters or request body
+- ALWAYS use `await headers()` before `verifyUserToken()`
 - The token comes from the `x-whop-user-token` header
 
 ## Reference

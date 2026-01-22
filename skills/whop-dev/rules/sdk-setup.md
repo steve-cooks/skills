@@ -1,9 +1,15 @@
 ---
 name: sdk-setup
 description: Initialize Whop SDK correctly for server and client operations
+impact: CRITICAL
+impactDescription: Required for all Whop API operations - incorrect setup breaks everything
 metadata:
   tags: sdk, setup, configuration, server
 ---
+
+## SDK Setup
+
+The Whop SDK is required for all server-side operations.
 
 ## Installation
 
@@ -13,7 +19,7 @@ pnpm add @whop/sdk @whop/react
 
 ## Server-Side SDK Setup
 
-Create a centralized SDK instance:
+Create a centralized SDK instance. This file MUST exist for any Whop app:
 
 ```typescript
 // lib/whop-sdk.ts
@@ -34,7 +40,7 @@ import { Whop } from "@whop/sdk";
 export const whopsdk = new Whop({
   appID: process.env.NEXT_PUBLIC_WHOP_APP_ID,
   apiKey: process.env.WHOP_API_KEY,
-  // Webhook key must be base64 encoded
+  // Webhook key MUST be base64 encoded
   webhookKey: btoa(process.env.WHOP_WEBHOOK_SECRET || ""),
 });
 ```
@@ -42,12 +48,12 @@ export const whopsdk = new Whop({
 ## Environment Variables
 
 ```bash
-# Required (NEVER expose to client)
+# Required (NEVER expose WHOP_API_KEY to client)
 WHOP_API_KEY=your_api_key              # Server-side API key
 WHOP_WEBHOOK_SECRET=whsec_xxxxx        # Webhook signing secret
 
 # Required for apps
-NEXT_PUBLIC_WHOP_APP_ID=app_xxxxx      # App identifier
+NEXT_PUBLIC_WHOP_APP_ID=app_xxxxx      # App identifier (safe for client)
 ```
 
 ## Common SDK Methods
@@ -73,7 +79,7 @@ const response = await whopsdk.users.checkAccess(
   { id: userId }
 );
 
-// Response: { has_access: true, access_level: "customer" }
+// Response: { has_access: true, access_level: "customer" | "admin" }
 ```
 
 ### Payments
@@ -144,8 +150,6 @@ export function MyComponent() {
 
 ## Type Imports
 
-Import types from the SDK:
-
 ```typescript
 import type { Payment, Membership, User } from "@whop/sdk/resources.js";
 ```
@@ -158,8 +162,8 @@ Whop provides an MCP server for AI-assisted development:
 
 ## Security Rules
 
-- `WHOP_API_KEY` is SECRET - never expose to client or logs
-- Never log full API keys - truncate if needed: `key.slice(0, 8) + "..."`
+- `WHOP_API_KEY` is SECRET - NEVER expose to client or logs
+- NEVER log full API keys - truncate if needed: `key.slice(0, 8) + "..."`
 - SDK is server-side only - use in API routes and Server Components
 - Get API key from [Whop Developer Dashboard](https://whop.com/dashboard/developer)
 

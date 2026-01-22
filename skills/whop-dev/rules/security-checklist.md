@@ -1,23 +1,29 @@
 ---
 name: security-checklist
 description: Security best practices for Whop app development
+impact: CRITICAL
+impactDescription: Prevents data breaches, auth bypass, and injection attacks
 metadata:
   tags: security, authentication, authorization, validation
 ---
 
+## Security Best Practices
+
+Every Whop app MUST follow these security practices.
+
 ## Authentication Security
 
-### Always Verify Tokens
+### MUST: Always Verify Tokens
 
 ```typescript
 // CORRECT: Verify token before ANY operation
 const { userId } = await whopSdk.verifyUserToken(headersList);
 
-// WRONG: Trusting client-provided data
-const userId = request.headers.get("x-user-id"); // NEVER DO THIS
+// WRONG: Trusting client-provided data - NEVER DO THIS
+const userId = request.headers.get("x-user-id");
 ```
 
-### Handle Auth Errors Securely
+### MUST: Handle Auth Errors Securely
 
 ```typescript
 try {
@@ -30,36 +36,35 @@ try {
 
 ## Authorization Security
 
-### Always Check Access
+### MUST: Always Check Access
 
 ```typescript
 // After auth, verify user has access to the resource
-const { hasAccess, accessLevel } = await whopSdk.access.checkIfUserHasAccessToExperience({
-  userId,
+const { has_access, access_level } = await whopSdk.users.checkAccess(
   experienceId,
-});
+  { id: userId }
+);
 
-if (!hasAccess) {
+if (!has_access) {
   return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 }
 
 // For admin-only routes
-if (accessLevel !== "admin") {
+if (access_level !== "admin") {
   return NextResponse.json({ error: "Admin access required" }, { status: 403 });
 }
 ```
 
-### Resource Ownership
+### MUST: Verify Resource Ownership
 
-If your app uses a database, always verify ownership:
+If your app uses a database, ALWAYS verify ownership:
 
 ```typescript
-// Always verify ownership when accessing user data
-// Example with any database:
+// ALWAYS include ownership check in queries
 const item = await db.items.findOne({
   where: {
     id: itemId,
-    user_id: userId, // CRITICAL: ownership check
+    user_id: userId, // CRITICAL: prevents accessing other users' data
   },
 });
 
@@ -70,7 +75,7 @@ if (!item) {
 
 ## Input Validation
 
-### Validate All Input
+### MUST: Validate All Input
 
 ```typescript
 export async function POST(request: NextRequest) {
@@ -91,7 +96,7 @@ export async function POST(request: NextRequest) {
 }
 ```
 
-### Validate IDs
+### MUST: Validate Whop IDs
 
 ```typescript
 // Validate Whop ID formats
@@ -106,7 +111,7 @@ if (!isValidWhopId(experienceId, "exp")) {
 
 ## Error Handling
 
-### Never Leak Internal Details
+### NEVER: Leak Internal Details
 
 ```typescript
 // WRONG: Leaks internal information
@@ -129,9 +134,7 @@ catch (error) {
 
 ## Data Protection
 
-### Explicit Field Selection
-
-If using a database, only select/return needed fields:
+### MUST: Use Explicit Field Selection
 
 ```typescript
 // WRONG: May expose sensitive fields
@@ -140,11 +143,11 @@ const users = await db.users.findMany(); // Returns everything
 // CORRECT: Select only needed columns
 const users = await db.users.findMany({
   select: { id: true, username: true, avatar_url: true },
-  // No email, passwords, or internal fields
+  // Excludes email, passwords, internal fields
 });
 ```
 
-### Sanitize Response Data
+### MUST: Sanitize Response Data
 
 ```typescript
 // Strip sensitive fields before returning to client
@@ -158,7 +161,7 @@ return NextResponse.json({ data: sanitizeForClient(result) });
 
 ## Environment Security
 
-### Never Expose Secrets
+### NEVER: Expose Secrets
 
 ```typescript
 // WRONG
@@ -168,7 +171,7 @@ console.log("API Key:", process.env.WHOP_API_KEY);
 console.log("Using API key:", process.env.WHOP_API_KEY?.slice(0, 8) + "...");
 ```
 
-### Validate Environment
+### MUST: Validate Environment
 
 ```typescript
 // lib/whop-sdk.ts
@@ -183,7 +186,7 @@ if (!process.env.NEXT_PUBLIC_WHOP_APP_ID) {
 
 ## Rate Limiting
 
-### Implement Per-User Limits
+### SHOULD: Implement Per-User Limits
 
 ```typescript
 const rateLimiter = new Map<string, { count: number; resetAt: number }>();
@@ -213,7 +216,7 @@ if (!checkRateLimit(userId)) {
 
 ## Security Order
 
-Always follow this order in API routes:
+ALWAYS follow this order in API routes:
 
 ```
 1. Authentication (verify token)     → 401 if failed
@@ -222,3 +225,17 @@ Always follow this order in API routes:
 4. Authorization (access check)      → 403 if denied
 5. Business logic                    → Only after all pass
 ```
+
+## Quick Checklist
+
+- [ ] All routes verify user token
+- [ ] All routes check access level
+- [ ] All database queries include ownership filter
+- [ ] All input is validated and sanitized
+- [ ] No secrets in logs or responses
+- [ ] Generic error messages to clients
+- [ ] Rate limiting on public endpoints
+
+## Reference
+
+- [Security Best Practices](https://docs.whop.com/developer/guides/security)

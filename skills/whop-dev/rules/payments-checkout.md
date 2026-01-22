@@ -1,9 +1,15 @@
 ---
 name: payments-checkout
 description: Creating checkout configurations for accepting payments
+impact: HIGH
+impactDescription: Core monetization - enables payment collection in your app
 metadata:
   tags: payments, checkout, monetization, pricing
 ---
+
+## Checkout Configurations
+
+Checkout configurations define what users pay for.
 
 ## Required Permissions
 
@@ -12,8 +18,6 @@ metadata:
 - `access_pass:create`
 
 ## Creating a Checkout Configuration
-
-Checkout configurations define what users pay for.
 
 ### With Inline Plan
 
@@ -168,7 +172,7 @@ metadata: {
 }
 ```
 
-Access this metadata in your webhook handler.
+Access this metadata in your webhook handler via `payment.checkout_configuration.metadata`.
 
 ## Reference
 

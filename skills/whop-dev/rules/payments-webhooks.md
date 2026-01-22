@@ -1,9 +1,15 @@
 ---
 name: payments-webhooks
 description: Handling Whop payment webhooks securely
+impact: HIGH
+impactDescription: Required for processing payments - missed webhooks = lost revenue
 metadata:
   tags: payments, webhooks, events, security
 ---
+
+## Payment Webhooks
+
+Webhooks notify your app when payments complete.
 
 ## SDK Setup with Webhook Key
 
@@ -35,7 +41,7 @@ export async function POST(request: NextRequest): Promise<Response> {
     const requestBodyText = await request.text();
     const headers = Object.fromEntries(request.headers);
     
-    // Validate and unwrap the webhook
+    // MUST validate signature before processing
     const webhookData = whopsdk.webhooks.unwrap(requestBodyText, { headers });
     
     // Handle specific events
@@ -54,7 +60,7 @@ export async function POST(request: NextRequest): Promise<Response> {
         break;
     }
     
-    // Return 2xx quickly to avoid retries
+    // MUST return 2xx quickly to avoid retries
     return new Response("OK", { status: 200 });
   } catch (error) {
     console.error("Webhook error:", error);
@@ -79,7 +85,7 @@ async function handlePaymentSucceeded(payment: Payment) {
 }
 ```
 
-## Important: Use waitUntil
+## MUST: Use waitUntil
 
 The `waitUntil` function from `@vercel/functions` allows you to:
 - Return a response quickly (avoiding webhook timeouts)
@@ -121,9 +127,9 @@ For events on all installed companies:
 3. Create webhook and select events
 4. Request `webhook_receive:*` permissions
 
-## Idempotency
+## MUST: Handle Idempotency
 
-Webhooks may be delivered multiple times. Handle duplicates:
+Webhooks may be delivered multiple times. ALWAYS handle duplicates:
 
 ```typescript
 async function handlePaymentSucceeded(payment: Payment) {
@@ -134,20 +140,20 @@ async function handlePaymentSucceeded(payment: Payment) {
   
   if (existing) {
     console.log("Payment already processed:", payment.id);
-    return;
+    return; // Idempotent - safe to ignore duplicate
   }
   
   // Process the payment...
 }
 ```
 
-## Security
+## Security Checklist
 
-- Always use `webhooks.unwrap()` to verify signatures
-- Never trust unverified webhook data
-- Store `payment_id` to prevent duplicate processing
-- Return 2xx quickly to avoid retries
-- Use `waitUntil` for long-running operations
+- [ ] ALWAYS use `webhooks.unwrap()` to verify signatures
+- [ ] NEVER trust unverified webhook data
+- [ ] Store `payment_id` to prevent duplicate processing
+- [ ] Return 2xx quickly to avoid retries
+- [ ] Use `waitUntil` for long-running operations
 
 ## Reference
 
