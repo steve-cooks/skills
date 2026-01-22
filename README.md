@@ -55,8 +55,9 @@ Each skill contains:
 
 ## Resources
 
-- [SKILLS] (https://skills.sh/)
-- [ME] (https://x.com/steve_cook, https://whop.com/@stevecooks/)
+- [SKILLS](https://skills.sh)
+- [ME@X](https://x.com/steve_cook)
+- [ME@Whop](https://whop.com/@stevecooks)
 - [Whop Developer Docs](https://docs.whop.com/developer/getting-started)
 - [Whop API Reference](https://docs.whop.com/developer/api/getting-started)
 - [Frosted UI Storybook](https://storybook.whop.com/)
