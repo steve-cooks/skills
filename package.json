@@ -1,0 +1,19 @@
+{
+  "name": "@steve-cooks/skills",
+  "version": "1.0.0",
+  "description": "Agent skills for AI-assisted app development",
+  "author": "steve-cooks",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/steve-cooks/skills"
+  },
+  "keywords": [
+    "agent-skills",
+    "whop",
+    "ai",
+    "claude",
+    "cursor",
+    "copilot"
+  ]
+}
