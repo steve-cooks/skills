@@ -9,7 +9,24 @@ metadata:
 
 # Whop App Development
 
-Best practices for building apps on the Whop platform.
+Build apps that run inside the Whop platform - handling authentication, payments, webhooks, and UI all with best practices.
+
+## When to Use
+
+Use this skill when:
+
+- Building a new Whop app from scratch
+- Setting up `@whop/sdk` or `@whop/react`
+- Implementing authentication with `verifyUserToken` or `checkAccess`
+- Creating payment flows, checkout, or webhooks
+- Building Experience, Dashboard, or Discover pages
+- Working with Frosted UI components
+
+## How to Use
+
+Read individual rule files for detailed explanations and code examples. Start with the "Build From Scratch" guides if you are in a brand new repo, or jump to specific rules in the Quick Reference.
+
+---
 
 ## Build From Scratch
 
