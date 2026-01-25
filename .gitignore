@@ -21,3 +21,4 @@ Thumbs.db
 # Local agents (not published with skill)
 .agents/
 .cursor/
+.claude/

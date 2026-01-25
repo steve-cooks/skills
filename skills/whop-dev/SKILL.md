@@ -1,10 +1,10 @@
 ---
 name: whop-dev
-description: Build Whop apps with Next.js. Includes a "build from scratch" guide for going from app idea to deployed app, plus best practices for authentication, payments, webhooks, and UI. Use when building apps for the Whop platform. Triggers on "build me a Whop app", @whop/sdk, verifyUserToken, checkAccess, checkout flows, webhook handling, Experience/Dashboard pages, Frosted UI.
+description: Build Next.js apps for the Whop platform. For empty repos, guides users from idea to deployed app through discovery and setup. For existing projects, provides best practices for authentication, payments, webhooks, and UI. Triggers on "build me a Whop app", @whop/sdk, verifyUserToken, checkAccess, checkout flows, webhook handling, Experience/Dashboard pages, Frosted UI. Delegates to companion skills (frontend-design, vercel-react-best-practices, supabase-postgres-best-practices, web-design-guidelines) for design, performance, and database.
 metadata:
   tags: whop, nextjs, payments, sdk, frosted-ui, authentication
   author: Steve | https://whop.com/@stevecooks | https://x.com/steve_cook
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Whop App Development
@@ -13,31 +13,57 @@ Build apps that run inside the Whop platform - handling authentication, payments
 
 ## When to Use
 
-Use this skill when:
+**Empty repo / new project:**
+- "Build me a Whop app" → Start with [app-from-scratch.md](rules/app-from-scratch.md)
+- Guides through discovery, setup, and building from nothing
 
-- Building a new Whop app from scratch
-- Setting up `@whop/sdk` or `@whop/react`
-- Implementing authentication with `verifyUserToken` or `checkAccess`
-- Creating payment flows, checkout, or webhooks
-- Building Experience, Dashboard, or Discover pages
-- Working with Frosted UI components
+**Existing Whop project:**
+- Jump directly to specific rules in Quick Reference below
+- Adding payments → [payments-checkout.md](rules/payments-checkout.md)
+- Adding auth → [auth-verify-token.md](rules/auth-verify-token.md)
+- SDK issues → [sdk-setup.md](rules/sdk-setup.md)
+
+## Companion Skills (Install First)
+
+whop-dev focuses on Whop-specific patterns. For complete app development, **install these companion skills**:
+
+```bash
+npx skills add https://github.com/anthropics/skills --skill frontend-design && \
+npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-best-practices && \
+npx skills add https://github.com/supabase/agent-skills --skill supabase-postgres-best-practices && \
+npx skills add https://github.com/vercel-labs/agent-skills --skill web-design-guidelines
+```
+
+| Skill | Delegates To | When |
+|-------|--------------|------|
+| `frontend-design` | UI creation | Building components, pages, visual design |
+| `vercel-react-best-practices` | Performance | React optimization, data fetching, bundles |
+| `supabase-postgres-best-practices` | Database | Queries, schema, indexes, RLS |
+| `web-design-guidelines` | UX review | Accessibility, design auditing |
+
+**IMPORTANT**: When starting a new project or build-from-scratch flow, install companion skills FIRST before scaffolding. This enables whop-dev to hand off specialized work to expert skills.
+
+See [companion-skills.md](rules/companion-skills.md) for detailed handoff patterns.
 
 ## How to Use
 
-Read individual rule files for detailed explanations and code examples. Start with the "Build From Scratch" guides if you are in a brand new repo, or jump to specific rules in the Quick Reference.
+**Starting fresh (empty repo)?** → Follow [Build From Scratch](#build-from-scratch) - guided flow from idea to deployed app.
+
+**Existing project?** → Jump to [Quick Reference](#quick-reference) for specific features.
 
 ---
 
 ## Build From Scratch
 
-New to Whop? Follow these guides to go from idea to deployed app:
+**For empty repos only.** Go from idea to deployed Whop app:
 
 | Step | Guide | Description |
 |------|-------|-------------|
-| 1 | [app-from-scratch.md](rules/app-from-scratch.md) | **START HERE** - Plan your app type and architecture |
+| 0 | [companion-skills.md](rules/companion-skills.md) | **FIRST** - Install companion skills |
+| 1 | [app-from-scratch.md](rules/app-from-scratch.md) | Plan your app type and architecture |
 | 2a | [app-scaffold-b2b.md](rules/app-scaffold-b2b.md) | B2B: Dashboard-only apps for admins |
 | 2b | [app-scaffold-b2c.md](rules/app-scaffold-b2c.md) | B2C: Experience apps for members |
-| 3 | [app-database.md](rules/app-database.md) | Add Supabase (if needed) |
+| 3 | [app-database.md](rules/app-database.md) | Add Supabase → `supabase-postgres-best-practices` |
 | 4 | [app-whop-dashboard.md](rules/app-whop-dashboard.md) | Configure in Whop Developer Dashboard |
 | 5 | [app-deployment.md](rules/app-deployment.md) | Deploy to Vercel |
 | 6 | [app-store-submission.md](rules/app-store-submission.md) | Submit to App Store (optional) |
@@ -122,6 +148,12 @@ New to Whop? Follow these guides to go from idea to deployed app:
 | [dev-proxy.md](rules/dev-proxy.md) | Local development proxy |
 | [dev-sandbox.md](rules/dev-sandbox.md) | Sandbox testing |
 
+### Companion Skills (ECOSYSTEM)
+
+| Rule | Description |
+|------|-------------|
+| [companion-skills.md](rules/companion-skills.md) | Install & delegate to specialized skills |
+
 ---
 
 ## App Views
@@ -163,9 +195,15 @@ For marketplaces with connected accounts:
 - [Frosted UI Storybook](https://storybook.whop.com/)
 - MCP Server: `https://mcp.whop.com/mcp` (Cursor) or `https://mcp.whop.com/sse` (Claude)
 
-## Related Skills
+## Handoff Triggers
 
-For specialized patterns, use alongside:
-- `supabase-postgres-best-practices` - Database optimization
-- `vercel-react-best-practices` - React/Next.js performance
-- `web-design-guidelines` - UI/UX review
+Delegate to companion skills when encountering these patterns:
+
+| Pattern | Hand Off To |
+|---------|-------------|
+| "design", "make it look good", "UI", "component" | → `frontend-design` |
+| "optimize", "performance", "slow", "bundle" | → `vercel-react-best-practices` |
+| "database", "query", "schema", "index", "RLS" | → `supabase-postgres-best-practices` |
+| "review UI", "accessibility", "audit" | → `web-design-guidelines` |
+
+See [companion-skills.md](rules/companion-skills.md) for complete handoff guide.

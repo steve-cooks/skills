@@ -112,3 +112,14 @@ const [authResult, sensitiveData] = await Promise.all([
 ```
 
 **Rule:** Auth/validation must complete before data operations.
+
+## Companion Skill Handoff
+
+**→ Hand off to `vercel-react-best-practices` for:**
+- Advanced async patterns (`async-defer-await`, `async-dependencies`)
+- Suspense boundaries and streaming
+- Bundle size optimization
+- Re-render prevention
+- Server component patterns
+
+This rule covers basic Whop API patterns. For comprehensive React/Next.js performance, delegate to the companion skill.

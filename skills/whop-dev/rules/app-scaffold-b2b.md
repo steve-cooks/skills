@@ -233,3 +233,12 @@ NEXT_PUBLIC_WHOP_APP_ID=app_xxxxx
 2. If you need a database, see [app-database.md](app-database.md)
 3. Configure Whop Dashboard - see [app-whop-dashboard.md](app-whop-dashboard.md)
 4. Deploy to Vercel - see [app-deployment.md](app-deployment.md)
+
+## Companion Skill Handoff
+
+This scaffold provides the **structure** (routes, auth, access checks). Hand off to companion skills for:
+
+- **→ `frontend-design`** - Design dashboard UI, charts, data visualizations
+- **→ `supabase-postgres-best-practices`** - If adding database, optimize schema and queries
+- **→ `vercel-react-best-practices`** - Before deployment, optimize performance
+- **→ `web-design-guidelines`** - Review UI/UX compliance before launch

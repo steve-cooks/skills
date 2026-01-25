@@ -1,219 +1,232 @@
 ---
 name: app-from-scratch
-description: Build a complete Whop app from an empty repository. Use when starting a new Whop app, scaffolding a project, or when user says "build me a Whop app" or describes an app idea. Works for both beginners (guided discovery) and experienced developers (quick scaffold).
+description: Build a Whop app from an empty repository. ONLY use when starting fresh - empty folder, no existing project. Triggers on "build me a Whop app" in empty repo, "I want to create a Whop app", or "start a new Whop app". Do NOT use for existing projects - use specific rules instead.
 metadata:
-  tags: scaffold, new-app, getting-started, template
+  tags: scaffold, new-app, getting-started, template, empty-repo
 ---
 
 # Build a Whop App From Scratch
 
-Guide users from an empty repo to a deployed Whop app. Works for beginners and experts.
+**When to use:** Empty repo, no existing project. User wants to build a new Whop app from nothing.
 
-## For Beginners: Discovery Questions
-
-Ask these plain-language questions to understand the app. Do NOT ask technical questions like "what database do you need?" - infer that yourself.
-
-### Essential Questions (Ask First)
-
-1. **"What does your app do? Describe it like you're explaining to a friend."**
-   - Get the core functionality in their words
-   - Example answers: "lets people ask me questions and pay for answers", "shows my community's stats", "lets members play a game"
-
-2. **"Who will use this app?"**
-   - **"Just you/your team"** → B2B (Dashboard only)
-   - **"My community members/customers"** → B2C (Experience page)
-   - **"Both - members use it, but I configure it"** → B2C with Dashboard
-
-### Follow-up Questions (If Needed)
-
-3. **"What happens when someone uses your app? Walk me through it."**
-   - Reveals the user flow and what data gets created
-   - Example: "They type a question, pay $5, I answer it, they see my answer"
-
-4. **"Does your app need to remember anything between visits?"**
-   - Yes (questions, votes, purchases, profiles) → Needs database
-   - No (calculator, embed, config tool) → No database needed
-
-5. **"Do you want real-time updates? Like seeing new messages instantly?"**
-   - Yes → Full-stack with Supabase realtime
-   - No → Simpler architecture works
-
-## For Experts: Quick Decision
-
-Skip discovery if the user already knows what they want. Jump straight to scaffolding.
-
-**Fast path triggers:**
-- "Build me a B2B analytics dashboard"
-- "I need a B2C app with Supabase"
-- "Scaffold a simple widget app"
-
-## Architecture Decision Matrix
-
-Based on user's description, determine architecture:
-
-| User Says... | Architecture | Why |
-|--------------|--------------|-----|
-| "Display info", "embed something", "calculator", "config panel" | **Simple** (no DB) | No data to persist |
-| "Upload files", "share files with members" | **Whop-native** | Use `client.files.upload()` |
-| "Post updates", "discussion board" | **Whop-native** | Use Whop Forums API |
-| "Chat", "messaging" | **Whop-native** | Use Whop Chat API |
-| "Questions", "votes", "purchases", "profiles", "products", "analytics" | **Full-stack** | Custom data = Supabase |
-| "Real-time", "live updates", "notifications when X happens" | **Full-stack** | Needs Supabase realtime |
-
-## Example: Inferring Architecture
-
-**User:** "I want an app where my community can ask me questions and I answer them for money"
-
-**Analysis:**
-- Who uses it? Community members → **B2C**
-- What data? Questions, answers, payments → **Custom data = Full-stack**
-- Real-time? Nice to have for seeing new questions → **Supabase with realtime**
-
-**Result:** B2C app with Supabase database
+**When NOT to use:** Existing codebase, already has a Whop app, just needs to add features → use specific rules directly (sdk-setup, auth-verify-token, payments-checkout, etc.)
 
 ---
 
-**User:** "I need a dashboard to see how many members I have and their activity"
+## Detect User Experience
 
-**Analysis:**
-- Who uses it? Just the creator → **B2B**
-- What data? Reading from Whop API, no custom storage → **Simple**
+**Technical user signals:**
+- Uses terms like SDK, webhooks, B2B/B2C, API
+- Says "scaffold me a B2C app with Supabase"
+- Knows what they want, just needs it built
 
-**Result:** B2B dashboard, no database needed
+→ Move faster, less questions, build efficiently.
+
+**Non-technical / vibe coder signals:**
+- Describes idea in plain language ("I want to build...")
+- Asks "how do I start?"
+- Unfamiliar with Whop concepts
+
+→ Full guided flow with discovery questions.
+
+**If unclear, ask:**
+> "Want me to walk you through each step, or just scaffold and build?"
 
 ---
 
-**User:** "A place for members to share and download files"
+## Phase 1: Discovery
 
-**Analysis:**
-- Who uses it? Community members → **B2C**
-- What data? Files → **Whop-native file storage**
+Before writing code, understand what they want.
 
-**Result:** B2C app using Whop Files API, no external database
+**For non-technical users, ask plain-language questions:**
+> "Tell me about the app you want to build. What should it do?"
 
-## App Type Summary
+Then clarify as needed:
+- "Walk me through what happens when someone uses your app."
+- "Will your community members use this, or just you/your team?"
+- "Does it need to save anything? (user data, posts, files, etc.)"
 
-### B2C (Experience App)
-- Community members/customers use it
-- Has `/experiences/[experienceId]` route
-- May also have `/dashboard/[companyId]` for admin settings
-- Examples: Q&A, games, forums, content viewers, marketplaces
+**For technical users, confirm quickly:**
+> "B2B or B2C? Need a database?"
 
-### B2B (Dashboard App)
-- Only creator/admin uses it
-- Only has `/dashboard/[companyId]` route
-- No `/experiences` route
-- Examples: Analytics, automation, CRM, email tools, settings panels
+Keep going until you understand:
+1. **Who uses it**: Members (B2C) or just admins (B2B)?
+2. **What data**: None, Whop-native (files/forums/chat), or Supabase?
+3. **Core features**: The 2-3 main things it does.
 
-description: Build a complete Whop app from an empty repository. Use when starting a new Whop app, scaffolding 
-a project, or when user says "build me a Whop app" or describes an app idea.
-Guide users from an empty repo to a deployed Whop app.
-## Step 1: Understand the App Idea
-Ask clarifying questions if the user's requirements are unclear:
-1. **What does your app do?** (Get a clear description)
-2. **Who uses it?** (Determines B2B vs B2C)
-3. **What data needs to be stored?** (Determines architecture)
-## Step 2: Determine App Type
-### B2C (Experience App)
-**Choose if:** Community members/customers will use the app
-- Has `/experiences/[experienceId]` route (required)
-- Examples: Q&A apps, games, forums, content viewers, community tools
-**Choose if:** Only creators/admins use the app (no customer-facing UI)
+## Phase 2: Confirm Plan
 
-- Examples: Analytics dashboards, automation tools, email senders, CRM, offer managers
-**Quick test:** "Will community members interact with this app?"
-- Yes → B2C
-- No (admin only) → B2B
-## Architecture Summary
+Summarize back:
+> "Here's the plan:
+> - **Type**: [B2C / B2B]
+> - **What it does**: [description]
+> - **Storage**: [None / Whop APIs / Supabase]
+> 
+> Sound right?"
 
-### Simple (No Storage)
-- Frontend-only or frontend + API routes
-- No data persistence between sessions
-- Examples: Calculators, embeds, widgets, config panels
+Wait for confirmation.
 
-### Whop-Native
-- Use Whop's built-in storage APIs
-- Files: `client.files.upload()`
-- Posts: Whop Forums API
-- Messages: Whop Chat API
+## Phase 3: Setup
 
-### Full-Stack (Supabase)
-- Custom data models
-- PostgreSQL database
-- Optional real-time subscriptions
-- Examples: Q&A apps, marketplaces, analytics with custom metrics
-
-## Scaffold the Project
-
-Once architecture is determined:
-
+### 1. Install Companion Skills
 ```bash
-pnpm create next-app@latest \
-    -e https://github.com/whopio/whop-nextjs-app-template \
-    my-whop-app
-
-cd my-whop-app
-pnpm install
+npx skills add https://github.com/anthropics/skills --skill frontend-design && \
+npx skills add https://github.com/vercel-labs/agent-skills --skill vercel-react-best-practices && \
+npx skills add https://github.com/supabase/agent-skills --skill supabase-postgres-best-practices && \
+npx skills add https://github.com/vercel-labs/agent-skills --skill web-design-guidelines
 ```
 
-### Project Structure
+### 2. Create Whop App (User Action Required)
 
-```
-my-whop-app/
-├── app/
-│   ├── experiences/[experienceId]/page.tsx  # B2C: Customer view
-│   ├── dashboard/[companyId]/page.tsx       # Admin view
-│   ├── discover/page.tsx                    # Public marketing
-│   ├── api/                                 # API routes
-│   ├── layout.tsx
-│   ├── page.tsx
-│   └── globals.css
-├── lib/
-│   └── whop-sdk.ts                          # SDK setup
-├── components/
-├── .env.development
-├── next.config.ts
-├── tailwind.config.ts
-└── package.json
+Guide user:
+> "Create your app in Whop:
+> 1. Go to [whop.com/dashboard/developer](https://whop.com/dashboard/developer)
+> 2. Click **Create App**, name it
+> 3. Copy the environment variables and paste them here"
+
+**Wait for API keys before continuing.**
+
+### 3. Scaffold Project
+```bash
+pnpm create next-app@latest -e https://github.com/whopio/whop-nextjs-app-template [app-name]
+cd [app-name] && pnpm install
 ```
 
-## Step 5: Follow Sub-Guides
+Create `.env.development.local` with their keys:
+```bash
+WHOP_API_KEY=[their key]
+NEXT_PUBLIC_WHOP_APP_ID=[their app id]
+```
 
-Based on app type and architecture, follow these guides in order:
-## Next Steps by App Type
+### 4. Configure App Views (User Action Required)
 
-### B2B Apps
-1. [app-scaffold-b2b.md](app-scaffold-b2b.md) - Dashboard template
-2. [app-database.md](app-database.md) - If full-stack
-3. [app-whop-dashboard.md](app-whop-dashboard.md) - Configure Whop Developer Dashboard
-4. [app-deployment.md](app-deployment.md) - Deploy to Vercel
+> "In Whop dashboard → Hosting section, set these paths:"
 
-### B2C Apps
-1. [app-scaffold-b2c.md](app-scaffold-b2c.md) - Experience template
-2. [app-database.md](app-database.md) - If full-stack
-3. [app-whop-dashboard.md](app-whop-dashboard.md) - Configure Whop
-4. [app-deployment.md](app-deployment.md) - Deploy to Vercel
+| Type | App Path | Dashboard Path | Discover Path |
+|------|----------|----------------|---------------|
+| B2C | `/experiences/[experienceId]` | `/dashboard/[companyId]` (optional) | `/discover` |
+| B2B | *leave empty* | `/dashboard/[companyId]` | `/discover` |
 
-### Optional
-- [app-store-submission.md](app-store-submission.md) - Submit/Publish to App Store
+**Wait for user to save settings.**
 
-## End-to-End Checklist
+### 5. Test Locally
 
-- [ ] Understand app idea (discovery or expert fast-path)
-- [ ] Determine app type (B2B/B2C)
-- [ ] Determine architecture (Simple/Whop-native/Full-stack)
-- [ ] Scaffold project from template
-- [ ] Configure routes for app type
-- [ ] Set up SDK in `lib/whop-sdk.ts`
-- [ ] Add authentication to protected routes
-- [ ] Set up database if full-stack
-- [ ] Configure Whop Developer Dashboard
-- [ ] Deploy to Vercel
-- [ ] Test in production Whop iframe
+> "Run `pnpm dev`, then:
+> 1. In Whop dashboard, click **Install App** → install to your whop
+> 2. You'll see an error - enable **Localhost mode** (settings icon, top right)
+> 
+> You should see your local app in Whop. Working?"
+
+Troubleshoot if needed.
+
+## Phase 4: Build (Autonomous Loop)
+
+After setup is complete, build the entire app autonomously. **Do not stop to ask user to test individual features.**
+
+### Build Loop
+
+```
+while (features_remaining):
+    1. Implement next feature
+    2. Test it yourself (run dev server, check for errors)
+    3. Fix any issues
+    4. Move to next feature
+
+until: All planned features are working
+```
+
+**Read scaffold guide for app type:**
+- B2B → [app-scaffold-b2b.md](app-scaffold-b2b.md)
+- B2C → [app-scaffold-b2c.md](app-scaffold-b2c.md)
+
+**Hand off to companion skills as needed:**
+- UI/design → `frontend-design`
+- Database schema → `supabase-postgres-best-practices` + [app-database.md](app-database.md)
+- React performance → `vercel-react-best-practices`
+
+**Self-testing during build:**
+- Run `pnpm dev` and verify pages load
+- Check browser console for errors
+- Test auth flows work (verifyUserToken)
+- Test data operations (create, read, update)
+- Verify both light and dark mode
+
+**CRITICAL: Never deliver a broken product.** If something doesn't work, fix it before moving on. The user should receive a working MVP.
+
+### When to Pause for User
+
+Only interrupt the build loop if:
+- Need API keys or env vars from user
+- Need user to configure something in Whop dashboard
+- Blocked by a decision only user can make
+- Genuinely stuck and need clarification
+
+Otherwise, keep building until done.
+
+## Phase 5: Present Working Product
+
+Once all features are built and tested:
+
+> "Your app is ready! Here's what I built:
+> - [Feature 1]: [how it works]
+> - [Feature 2]: [how it works]
+> - [Feature 3]: [how it works]
+> 
+> Run `pnpm dev` and test it out in Whop (Localhost mode). Let me know if you want any changes."
+
+**Wait for user feedback.** They may want:
+- Design tweaks → hand off to `frontend-design`
+- New features → add to the loop
+- Bug fixes → fix and re-test
+- Ready to deploy → proceed to Phase 6
+
+## Phase 6: Deploy
+
+When user approves the local version:
+
+1. Deploy to Vercel/Railway/Cloudflare
+2. Set env vars on host
+3. Guide user to set **Base URL** in Whop dashboard
+4. Disable Localhost mode
+
+> "Your app is live at [url]!"
+
+## Phase 7: Polish (Optional)
+
+If user wants to launch on App Store:
+- Verify light AND dark mode work
+- Check all features end-to-end
+- Remove any placeholder content
+- Verify access control (members can't see admin stuff)
+
+Hand off to `web-design-guidelines` for final UI/UX review.
+
+For App Store listing → [app-store-submission.md](app-store-submission.md)
+
+---
+
+## Architecture Reference
+
+| User Need | Solution |
+|-----------|----------|
+| Upload/share files | Whop Files API - no database needed |
+| Posts, discussions | Whop Forums API - no database needed |
+| Chat, messages | Whop Chat API - no database needed |
+| Calculator, display info | Stateless - no storage needed |
+| Custom data (profiles, products, votes) | Supabase database |
 
 ## Related Rules
 
-- [sdk-setup.md](sdk-setup.md) - SDK configuration
-- [views-structure.md](views-structure.md) - Page structure
-- [auth-verify-token.md](auth-verify-token.md) - Authentication
-- [ui-frosted.md](ui-frosted.md) - UI components
+| Topic | Rule |
+|-------|------|
+| SDK setup | [sdk-setup.md](sdk-setup.md) |
+| Authentication | [auth-verify-token.md](auth-verify-token.md) |
+| Payments | [payments-checkout.md](payments-checkout.md) |
+| Webhooks | [payments-webhooks.md](payments-webhooks.md) |
+| Database | [app-database.md](app-database.md) |
+| Companion skills | [companion-skills.md](companion-skills.md) |
+
+## Reference
+
+- [Whop B2B Apps Guide](https://docs.whop.com/whop-apps/b2b-apps)
+- [Whop Developer Docs](https://docs.whop.com/developer/getting-started)

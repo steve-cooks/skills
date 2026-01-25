@@ -314,13 +314,17 @@ export interface Item {
 - [ ] Indexes on all columns used in WHERE clauses
 - [ ] Select only needed columns (not `SELECT *`)
 
-## Advanced Patterns
+## Companion Skill Handoff
 
-For complex database patterns, see the `supabase-postgres-best-practices` skill:
+**→ Hand off to `supabase-postgres-best-practices` for:**
 - Query optimization and indexing strategies
-- RLS performance optimization
-- Connection pooling
-- Batch operations
+- RLS performance optimization  
+- Connection pooling configuration
+- Batch operations and N+1 prevention
+- Schema design best practices
+- EXPLAIN ANALYZE and monitoring
+
+This rule covers Whop-specific patterns (multi-tenancy with `company_id`/`experience_id`, auth verification before DB access). For deeper Postgres optimization, delegate to the companion skill.
 
 ## Reference
 

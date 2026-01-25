@@ -147,6 +147,14 @@ Frosted UI includes a Tailwind plugin for theme colors:
 <span className="text-warning">Warning</span>
 ```
 
+## Companion Skill Handoff
+
+**For custom design beyond Frosted UI components:**
+- → `frontend-design` for bold, distinctive UI aesthetics, custom layouts, animations
+- → `web-design-guidelines` for UI/UX review and accessibility auditing
+
+Frosted UI provides the building blocks; companion skills help create memorable experiences.
+
 ## Reference
 
 - [Frosted UI Docs](https://docs.whop.com/developer/guides/frosted_ui)
