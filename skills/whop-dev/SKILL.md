@@ -4,12 +4,25 @@ description: Build Next.js apps for the Whop platform. For empty repos, guides u
 metadata:
   tags: whop, nextjs, payments, sdk, frosted-ui, authentication
   author: Steve | https://whop.com/@stevecooks | https://x.com/steve_cook
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # Whop App Development
 
 Build apps that run inside the Whop platform - handling authentication, payments, webhooks, and UI all with best practices.
+
+## What Makes a Good Whop App (Suggestions)
+
+From **Steven S, Whop Founder** - guidelines for app success (not requirements, user requests take priority):
+
+| Principle | Description |
+|-----------|-------------|
+| **Empower Creators** | Give customization so each whop feels unique |
+| **Drive Discovery** | Create forum posts for activity |
+| **Price Sustainably** | Make money without gouging creators or customers |
+| **Keep UX Simple** | Core action obvious, minimal clicks |
+
+**Details:** [app-design-principles.md](rules/app-design-principles.md)
 
 ## When to Use
 
@@ -89,6 +102,12 @@ See [companion-skills.md](rules/companion-skills.md) for detailed handoff patter
 |------|-------------|
 | [sdk-setup.md](rules/sdk-setup.md) | Initialize Whop SDK (required) |
 | [sdk-iframe.md](rules/sdk-iframe.md) | Client-side iframe SDK |
+
+### Design Principles (SUGGESTIONS)
+
+| Rule | Description |
+|------|-------------|
+| [app-design-principles.md](rules/app-design-principles.md) | Founder's suggestions for app success (user requests take priority) |
 
 ### Payments (HIGH)
 
