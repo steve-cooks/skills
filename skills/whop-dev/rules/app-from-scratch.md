@@ -151,7 +151,7 @@ until: All planned features are working
 - Test data operations (create, read, update)
 - Verify both light and dark mode
 
-**CRITICAL: Never deliver a broken product.** If something doesn't work, fix it before moving on. The user should receive a working MVP.
+**CRITICAL: Never deliver a broken product.** If something doesn't work, fix it before moving on. The user should always receive a working product.
 
 ### When to Pause for User
 

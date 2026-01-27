@@ -4,7 +4,7 @@ description: Build Next.js apps for the Whop platform. For empty repos, guides u
 metadata:
   tags: whop, nextjs, payments, sdk, frosted-ui, authentication
   author: Steve | https://whop.com/@stevecooks | https://x.com/steve_cook
-  version: "1.2.1"
+  version: "1.2.2"
 ---
 
 # Whop App Development
@@ -13,12 +13,12 @@ Build apps that run inside the Whop platform - handling authentication, payments
 
 ## What Makes a Good Whop App (Suggestions)
 
-From **Steven S, Whop Founder** - guidelines for app success (not requirements, user requests take priority):
+Guidelines for app success (not requirements, user requests take priority):
 
 | Principle | Description |
 |-----------|-------------|
 | **Empower Creators** | Give customization so each whop feels unique |
-| **Drive Discovery** | Create forum posts for activity |
+| **Drive Discovery** | Make the app have some kind of sharing feature or posting potential to allow users to attrach more users|
 | **Price Sustainably** | Make money without gouging creators or customers |
 | **Keep UX Simple** | Core action obvious, minimal clicks |
 
